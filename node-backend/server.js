@@ -12,17 +12,15 @@ app.use(cors());
 
 app.post(
   "/predict",
-  ClerkExpressWithAuth({
-    jwtKey: process.env.CLERK_JWT_KEY,
-  }),
+  // ClerkExpressWithAuth({
+  //   jwtKey: process.env.CLERK_JWT_KEY,
+  // }),
   async (req, res) => {
     const data = req.body;
 
-    if (!req.auth.claims) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    console.log(req.auth);
+    // if (!req.auth.claims) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     // Call the Python Flask API
     fetch("http://127.0.0.1:8080/predict", {
