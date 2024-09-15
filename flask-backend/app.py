@@ -83,9 +83,9 @@ def predict():
         z_acceleration = -2
     
     # Convert Bangle.js 2 unit to E4 unit
-    x_acceleration /= 64
-    y_acceleration /= 64
-    z_acceleration /= 64
+    x_acceleration *= 64
+    y_acceleration *= 64
+    z_acceleration *= 64
 
     prediction = model.predict_proba([[heart_rate, x_acceleration, y_acceleration, z_acceleration]])[0][1]
     print(prediction.item())
