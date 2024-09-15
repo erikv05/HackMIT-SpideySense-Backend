@@ -87,6 +87,8 @@ def predict():
     y_acceleration *= 64
     z_acceleration *= 64
 
+    print(x_acceleration)
+
     prediction = model.predict_proba([[heart_rate, x_acceleration, y_acceleration, z_acceleration]])[0][1]
     print(prediction.item())
 
