@@ -82,6 +82,7 @@ def predict():
     if z_acceleration < -2:
         z_acceleration = -2
     
+    # Convert Bangle.js 2 unit to E4 unit
     x_acceleration /= 64
     y_acceleration /= 64
     z_acceleration /= 64
