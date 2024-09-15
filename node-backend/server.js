@@ -41,6 +41,30 @@ app.post(
   }
 );
 
+app.post(
+  "/alert",
+  ClerkExpressWithAuth({
+    jwtKey: process.env.CLERK_JWT_KEY,
+  }),
+  async (req, res) => {
+    const data = req.body;
+    if (!req.auth.claims) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!data.location) {
+      return res.status(400).json({ error: "No location included in alert" });
+    }
+
+    if (!data.userName) {
+      return res.status(400).json({ error: "No name included in alert" });
+    }
+
+    // TODO: make call
+    return res.status(200).json({ message: "Alert sent" });
+  }
+);
+
 const PORT = 8081;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
