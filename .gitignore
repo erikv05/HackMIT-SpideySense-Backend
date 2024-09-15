@@ -3,3 +3,5 @@ __pycache__/
 
 # npm
 node_modules/
+
+.env

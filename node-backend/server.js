@@ -1,12 +1,15 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+import { createClerkClient } from "@clerk/backend";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.post("/predict", (req, res) => {
+app.post("/predict", async (req, res) => {
   const data = req.body;
 
   // Call the Python Flask API
