@@ -7,10 +7,16 @@ app = Flask(__name__)
 CORS(app)
 model = joblib.load("flask-backend/WESAD_binary_xgboost.pkl")
 
+def is_float(string):
+    if string.replace(".", "").isnumeric():
+        return True
+    else:
+        return False
+
 @app.route('/predict', methods=['POST'])
 def predict():
-    #TODO: add better error handling
     data = request.json
+    # Confirm data exists
     if not "heart_rate" in data:
         return {"error": "Missing heart_rate parameter"}, 400
     if not "x_acceleration" in data:
@@ -20,12 +26,36 @@ def predict():
     if not "z_acceleration" in data:
         return {"error": "Missing z_acceleration parameter"}, 400
     if not "temperature" in data:
-        temperature = 0.5
-    else:
-        temperature = int(data["temperature"])
+        temperature = 5
+
+    # Confirm data is strings
+    if not isinstance(data["heart_rate"], (str, float, int)):
+        return {"error": "Invalid heart_rate parameter: data type"}, 400
+    if not isinstance(data["x_acceleration"], (str, float, int)):
+        return {"error": "Invalid heart_rate parameter"}, 400
+    if not isinstance(data["y_acceleration"], (str, float, int)):
+        return {"error": "Invalid heart_rate parameter"}, 400
+    if not isinstance(data["z_acceleration"], (str, float, int)):
+        return {"error": "Invalid heart_rate parameter"}, 400
+    
+    # Confirm data can be cast
+    if not is_float(data["heart_rate"]):
+        return {"error": "Invalid heart_rate parameter"}, 400
+    if not is_float(data["x_acceleration"]):
+        return {"error": "Invalid x_acceleration parameter"}, 400
+    if not is_float(data["y_acceleration"]):
+        return {"error": "Invalid y_acceleration parameter"}, 400
+    if not is_float(data["z_acceleration"]):
+        return {"error": "Invalid z_acceleration parameter"}, 400
+    if not isinstance(data, str) or not data["temperature"].isnumeric():
+        temperature = 5
+
+    # Convert temperature to cutoff 
+    if (int(temperature) < 1 or int(temperature) > 10):
+        temperature = 5
+    proba_cutoff = 0.5 + (0.05 * (5 - int(temperature)))
     
     #TODO: get correct data shape
-    #TODO: convert temperature from 1 to 10 scale
 
     heart_rate = data["heart_rate"]
     x_acceleration = data["x_acceleration"]
@@ -37,7 +67,7 @@ def predict():
     prediction = model.predict_proba([[0,0,0,0]])[0][1]
     print(prediction)
 
-    return {"prediction": "normal" if prediction.item() >= temperature else "anomaly"}
+    return {"prediction": "normal" if prediction.item() >= proba_cutoff else "anomaly"}
     
 
 if __name__ == '__main__':
