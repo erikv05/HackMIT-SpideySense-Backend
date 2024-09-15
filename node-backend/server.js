@@ -18,7 +18,7 @@ app.post(
   async (req, res) => {
     const data = req.body;
 
-    if (!req.auth) {
+    if (!req.auth.claims) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
