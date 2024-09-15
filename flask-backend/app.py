@@ -62,13 +62,29 @@ def predict():
     if (int(temperature) < 1 or int(temperature) > 10):
         temperature = 5
     proba_cutoff = 0.5 + (0.05 * (5 - int(temperature)))
-    
-    #TODO: get correct data shape
 
     heart_rate = float(data["heart_rate"])
     x_acceleration = float(data["x_acceleration"])
     y_acceleration = float(data["y_acceleration"])
     z_acceleration = float(data["z_acceleration"])
+
+    # Convert acceleration to max range of E4 if necessary
+    if x_acceleration > 2:
+        x_acceleration = 2
+    if x_acceleration < -2:
+        x_acceleration = -2
+    if y_acceleration > 2:
+        y_acceleration = 2
+    if y_acceleration < -2:
+        y_acceleration = -2
+    if z_acceleration > 2:
+        z_acceleration = 2
+    if z_acceleration < -2:
+        z_acceleration = -2
+    
+    x_acceleration /= 64
+    y_acceleration /= 64
+    z_acceleration /= 64
 
     prediction = model.predict_proba([[heart_rate, x_acceleration, y_acceleration, z_acceleration]])[0][1]
     print(prediction.item())
