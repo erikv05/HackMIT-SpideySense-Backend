@@ -13,10 +13,7 @@ app.use(cors());
 app.post(
   "/predict",
   ClerkExpressWithAuth({
-    jwtKey: process.env.CLERK_PUBLIC_KEY,
-    onError: () => {
-      res.status(401).json({ error: "Unauthorized" });
-    },
+    jwtKey: process.env.CLERK_JWT_KEY,
   }),
   async (req, res) => {
     const data = req.body;
