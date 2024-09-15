@@ -4,7 +4,7 @@ import joblib
 
 app = Flask(__name__)
 CORS(app)
-model = joblib.load("WESAD_binary_xgboost.pkl")
+model = joblib.load("flask-backend/WESAD_binary_xgboost.pkl")
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -22,4 +22,4 @@ def predict():
     
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8080)
