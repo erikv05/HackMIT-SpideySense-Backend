@@ -18,6 +18,12 @@ app.post(
   async (req, res) => {
     const data = req.body;
 
+    if (!req.auth) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    console.log(req.auth);
+
     // Call the Python Flask API
     fetch("http://127.0.0.1:8080/predict", {
       method: "POST",
