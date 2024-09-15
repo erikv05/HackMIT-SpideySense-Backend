@@ -1,34 +1,44 @@
-import { createClerkClient } from "@clerk/backend";
+import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.post("/predict", async (req, res) => {
-  const data = req.body;
-
-  // Call the Python Flask API
-  fetch("http://127.0.0.1:8080/predict", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+app.post(
+  "/predict",
+  ClerkExpressWithAuth({
+    jwtKey: process.env.CLERK_PUBLIC_KEY,
+    onError: () => {
+      res.status(401).json({ error: "Unauthorized" });
     },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      const prediction = result.prediction;
-      return res.json({ prediction });
+  }),
+  async (req, res) => {
+    const data = req.body;
+
+    // Call the Python Flask API
+    fetch("http://127.0.0.1:8080/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
-    .catch((error) => {
-      return res.status(400).json({ error: "Error:", error });
-    });
-});
+      .then((response) => response.json())
+      .then((result) => {
+        const prediction = result.prediction;
+        return res.json({ prediction });
+      })
+      .catch((error) => {
+        return res.status(400).json({ error: "Error:", error });
+      });
+  }
+);
 
 const PORT = 8081;
 app.listen(PORT, () => {

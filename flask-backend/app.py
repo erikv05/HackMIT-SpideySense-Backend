@@ -17,8 +17,17 @@ def predict():
         return {"error": "Missing y_acceleration parameter"}, 400
     if not "z_acceleration" in data:
         return {"error": "Missing z_acceleration parameter"}, 400
+    
+    #TODO: get correct data shape
 
-    return {"prediction": "normal" if model.predict([[data["heart_rate"], data["x_acceleration"], data["y_acceleration"], data["z_acceleration"]]])[0] == 0 else "anomaly"}
+    heart_rate = data["heart_rate"]
+    x_acceleration = data["x_acceleration"]
+    y_acceleration = data["y_acceleration"]
+    z_acceleration = data["z_acceleration"]
+
+    prediction = model.predict([[heart_rate, x_acceleration, y_acceleration, z_acceleration]])[0]
+
+    return {"prediction": "normal" if prediction == 0 else "anomaly"}
     
 
 if __name__ == '__main__':
