@@ -39,13 +39,13 @@ def predict():
         return {"error": "Invalid heart_rate parameter"}, 400
     
     # Confirm data can be cast
-    if not is_float(data["heart_rate"]):
+    if not is_float(str(data["heart_rate"])):
         return {"error": "Invalid heart_rate parameter"}, 400
-    if not is_float(data["x_acceleration"]):
+    if not is_float(str(data["x_acceleration"])):
         return {"error": "Invalid x_acceleration parameter"}, 400
-    if not is_float(data["y_acceleration"]):
+    if not is_float(str(data["y_acceleration"])):
         return {"error": "Invalid y_acceleration parameter"}, 400
-    if not is_float(data["z_acceleration"]):
+    if not is_float(str(data["z_acceleration"])):
         return {"error": "Invalid z_acceleration parameter"}, 400
     if not isinstance(data, str) or not data["temperature"].isnumeric():
         temperature = 5
@@ -57,17 +57,17 @@ def predict():
     
     #TODO: get correct data shape
 
-    heart_rate = data["heart_rate"]
-    x_acceleration = data["x_acceleration"]
-    y_acceleration = data["y_acceleration"]
-    z_acceleration = data["z_acceleration"]
+    heart_rate = float(data["heart_rate"])
+    x_acceleration = float(data["x_acceleration"])
+    y_acceleration = float(data["y_acceleration"])
+    z_acceleration = float(data["z_acceleration"])
 
-    print(heart_rate, x_acceleration, y_acceleration, z_acceleration)
-
-    prediction = model.predict_proba([[0,0,0,0]])[0][1]
+    prediction = model.predict_proba([[heart_rate, x_acceleration, y_acceleration, z_acceleration]])[0][1]
     print(prediction)
+    print(proba_cutoff)
+    print(prediction.item())
 
-    return {"prediction": "normal" if prediction.item() >= proba_cutoff else "anomaly"}
+    return {"prediction": "normal" if prediction.item() < proba_cutoff else "anomaly"}
     
 
 if __name__ == '__main__':
